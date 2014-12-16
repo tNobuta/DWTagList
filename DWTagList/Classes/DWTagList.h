@@ -21,6 +21,7 @@
 @property (nonatomic) BOOL showTagMenu;
 @property (nonatomic, strong) UIView *view;
 @property (nonatomic, strong) NSArray *textArray;
+@property (nonatomic, strong) NSArray *tagViews;
 @property (nonatomic, weak) id<DWTagListDelegate> tagDelegate;
 @property (nonatomic, strong) UIColor *highlightedBackgroundColor;
 @property (nonatomic) BOOL automaticResize;
@@ -31,7 +32,7 @@
 @property (nonatomic, assign) CGFloat verticalPadding;
 @property (nonatomic, assign) CGFloat minimumWidth;
 @property (nonatomic, assign) CGFloat cornerRadius;
-@property (nonatomic, strong) UIColor *borderColor;
+@property (nonatomic, assign) CGColorRef borderColor;
 @property (nonatomic, assign) CGFloat borderWidth;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong) UIColor *textShadowColor;
@@ -42,7 +43,6 @@
 - (void)setTags:(NSArray *)array;
 - (void)display;
 - (CGSize)fittedSize;
-- (void)scrollToBottomAnimated:(BOOL)animated;
 
 @end
 
@@ -72,8 +72,9 @@
 
 @optional
 
-- (void)selectedTag:(NSString *)tagName tagIndex:(NSInteger)tagIndex;
-- (void)selectedTag:(NSString *)tagName;
+- (void)DWTagList:(DWTagList *)tagList willDisplayTagView:(DWTagView *)tagView atTagIndex:(NSInteger)tagIndex;
+- (void)DWTagList:(DWTagList *)tagList selectedTag:(NSString *)tagName tagIndex:(NSInteger)tagIndex;
+- (void)DWTagList:(DWTagList *)tagList selectedTag:(NSString *)tagName;
 - (void)tagListTagsChanged:(DWTagList *)tagList;
 
 @end
