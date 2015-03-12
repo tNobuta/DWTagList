@@ -15,6 +15,8 @@
     NSArray     *textArray;
     CGSize      sizeFit;
     UIColor     *lblBackgroundColor;
+    BOOL        hasMultipleLines;
+    CGFloat     fullLineWidth;
 }
 
 @property (nonatomic) BOOL viewOnly;

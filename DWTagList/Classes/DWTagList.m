@@ -52,6 +52,7 @@
         self.textShadowColor = TEXT_SHADOW_COLOR;
         self.textShadowOffset = TEXT_SHADOW_OFFSET;
         self.showTagMenu = DEFAULT_SHOW_TAG_MENU;
+        fullLineWidth = frame.size.width;
     }
     return self;
 }
@@ -74,6 +75,7 @@
         self.textShadowColor = TEXT_SHADOW_COLOR;
         self.textShadowOffset = TEXT_SHADOW_OFFSET;
         self.showTagMenu = DEFAULT_SHOW_TAG_MENU;
+        fullLineWidth = self.frame.size.width;
     }
     return self;
 }
@@ -82,13 +84,14 @@
 {
     textArray = [[NSArray alloc] initWithArray:array];
     sizeFit = CGSizeZero;
-    if (automaticResize) {
-        [self display];
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, sizeFit.width, sizeFit.height);
-    }
-    else {
-        [self setNeedsLayout];
-    }
+//    if (automaticResize) {
+//        [self display];
+//        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, sizeFit.width, sizeFit.height);
+//    }
+//    else {
+//        [self setNeedsLayout];
+//    }
+    [self setNeedsLayout];
 }
 
 - (void)setTagBackgroundColor:(UIColor *)color
@@ -116,6 +119,10 @@
     [super layoutSubviews];
 
     [self display];
+    
+    if (automaticResize) {
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, sizeFit.width, sizeFit.height);
+    }
 }
 
 - (void)display
@@ -135,8 +142,12 @@
         [subview removeFromSuperview];
     }
 
+    hasMultipleLines = NO;
     CGRect previousFrame = CGRectZero;
     BOOL gotPreviousFrame = NO;
+    CGRect originFrame = self.frame;
+    originFrame.size.width = fullLineWidth;
+    self.frame = originFrame;
 
     NSInteger tag = 0;
     NSMutableArray *newTagViews = [[NSMutableArray alloc] init];
@@ -162,6 +173,7 @@
         if (gotPreviousFrame) {
             CGRect newRect = CGRectZero;
             if (previousFrame.origin.x + previousFrame.size.width + tagView.frame.size.width + self.labelMargin > self.frame.size.width) {
+                hasMultipleLines = YES;
                 newRect.origin = CGPointMake(0, previousFrame.origin.y + tagView.frame.size.height + self.bottomMargin);
             } else {
                 newRect.origin = CGPointMake(previousFrame.origin.x + previousFrame.size.width + self.labelMargin, previousFrame.origin.y);
@@ -202,7 +214,8 @@
     
     self.tagViews = newTagViews;
 
-    sizeFit = CGSizeMake(self.frame.size.width, previousFrame.origin.y + previousFrame.size.height + self.bottomMargin + 1.0f);
+    CGFloat totalWidth = hasMultipleLines ? self.frame.size.width : (previousFrame.origin.x + previousFrame.size.width + self.labelMargin);
+    sizeFit = CGSizeMake(totalWidth, previousFrame.origin.y + previousFrame.size.height + self.bottomMargin + 1.0f);
     self.contentSize = sizeFit;
 }
 
@@ -224,11 +237,11 @@
     [tagView setBackgroundColor:[self getBackgroundColor]];
     
     if ([self.tagDelegate respondsToSelector:@selector(DWTagList:selectedTag:tagIndex:)]) {
-        [self.tagDelegate DWTagList:self selectedTag:tagView.label.text tagIndex:tagView.tag];
+        [self.tagDelegate DWTagList:self selectedTag:tagView.button.titleLabel.text tagIndex:tagView.tag];
     }
 
     if ([self.tagDelegate respondsToSelector:@selector(DWTagList:selectedTag:)]) {
-        [self.tagDelegate DWTagList:self selectedTag:tagView.label.text];
+        [self.tagDelegate DWTagList:self selectedTag:tagView.button.titleLabel.text];
     }
 
     if (self.showTagMenu) {
