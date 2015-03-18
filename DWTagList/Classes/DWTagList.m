@@ -84,14 +84,13 @@
 {
     textArray = [[NSArray alloc] initWithArray:array];
     sizeFit = CGSizeZero;
-//    if (automaticResize) {
-//        [self display];
-//        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, sizeFit.width, sizeFit.height);
-//    }
-//    else {
-//        [self setNeedsLayout];
-//    }
-    [self setNeedsLayout];
+    if (automaticResize) {
+        [self display];
+        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, sizeFit.width, sizeFit.height);
+    }
+    else {
+        [self display];
+    }
 }
 
 - (void)setTagBackgroundColor:(UIColor *)color
@@ -118,11 +117,11 @@
 {
     [super layoutSubviews];
 
-    [self display];
-    
-    if (automaticResize) {
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, sizeFit.width, sizeFit.height);
-    }
+//    [self display];
+//    
+//    if (automaticResize) {
+//        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, sizeFit.width, sizeFit.height);
+//    }
 }
 
 - (void)display
